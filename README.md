@@ -8,7 +8,7 @@ This is a project that dynamically generates content via javascript. Once the in
 
 To run the program simply go to the url below: https://c-andres.github.io/TriviaGame/index.html
 
-###H2Prerequisites
+### Prerequisites
 
 An Internet Browser (Chrome, Firefox, Opera, Etc.)
 
