@@ -1,0 +1,22 @@
+body{
+	background-position: fixed;
+	background-image: url(../images/cartoon-characters-from-80s-and-90s-wallpapers-1024x768.jpg);
+}
+.container{
+	background-color: rgba(255, 255, 255, .90);
+	border-radius: 6px;
+
+}
+h3{
+	font-size: 5em;
+}
+.row{
+	margin: 5vw;
+}
+button{
+	border-radius: 5px;
+	margin: .2vw;
+}
+#cartoon-form{
+	margin: 2vw;
+}

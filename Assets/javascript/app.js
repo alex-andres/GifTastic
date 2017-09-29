@@ -1,5 +1,4 @@
 $(function(){
-// giffy API KEY: 4fGVtcP6gPr5FHXCp60Uj3sg0ymoaJ8Q
 
 // create an array with a list of cartoons
 
@@ -10,6 +9,7 @@ var arrCartoonURL = [];
 var newBtn = "";
 var inputBtn = "";
 var addButton ="";
+
 
 //for loop that generates buttons for each string in arrCartoons
 function addInitialButtons(){
@@ -61,17 +61,17 @@ function moveButton(btnParam){
 	$("#button-container").append(btnParam);
 };
 
+
 addInitialButtons();
 //create a function that stores user input on button click
-$("#addCartoon").click(function(e){
+$(document).on("click", "#addCartoon", function(e) {
   e.preventDefault();
 	inputBtn = $("#cartoon-input").val();
   addInputButtons();
-  buttonClick();
   $("#cartoon-form")[0].reset();
 });
-function buttonClick(){
-  $("button").click(function(){
+//dynamically displays 10 GIFs on the page when the button is clicked
+$(document).on("click", "button", function() {
     var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + $(this).attr("url") + "&api_key=dc6zaTOxFJmzC&limit=10";
     console.log(queryURL);
     $.ajax({
@@ -82,35 +82,49 @@ function buttonClick(){
       var results = response.data;
       console.log(results);
       // Looping over every result item
-      for (var i = 0; i < results.length; i++) {
+      for (var j = 0; j < results.length; j++) {
 
-        // Only taking action if the photo has an appropriate rating
-        if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
-          // Creating a div with the class "item"
-          var gifDiv = $("#cartoons");
+        //conditional statement that doesnt allow for unfit ratings for children
+        if (results[j].rating !== "pg-13"  && results[j].rating !== "r") {
+          //storing the selector the cartons id in the var gif div for later use
+          var cartoonDiv = $("#cartoons");
 
           // Storing the result item's rating
-          var rating = results[i].rating;
+          var rating = results[j].rating;
 
-          // Creating a paragraph tag with the result item's rating
+          //storing the text of the rating in a paragraph element and storing that content in a var for later use
           var p = $("<p>").text("Rating: " + rating);
-
-          // Creating an image tag
+          var animated = results[j].images.fixed_height.url;
+          var still = results[j].images.fixed_height_still.url;
+          // Creating an image tag with all of the attributes to allow for click function
           var cartoonImage = $("<img>");
+          cartoonImage.attr("src", still);
+          cartoonImage.attr("data-still", still);
+          cartoonImage.attr("data-animate", animated);
+          cartoonImage.attr("data-state", "still");
+          cartoonImage.addClass("cartoonImage");
+          //assigns the fixed_height.url in the carton image attr.
+          cartoonImage.attr("src", results[j].images.fixed_height.url);
+          //prepends the images to the var cartoonDiv.]
+          cartoonDiv.prepend(p);
+          cartoonDiv.prepend(cartoonImage);
 
-          // Giving the image tag an src attribute of a proprty pulled off the
-          // result item
-          cartoonImage.attr("src", results[i].images.fixed_height.url);
-
-          // Appending the paragraph and cartoonImage we created to the "gifDiv" div we created
-          gifDiv.prepend(p);
-          gifDiv.prepend(cartoonImage);
-
-          // Prepending the gifDiv to the "#gifs-appear-here" div in the HTML
         };
       };
     });
   });
-  };
-buttonClick();
+  $(document).on("click", ".cartoonImage", function() {
+    //stores the clicked on images data-state in the state variable
+    var state = $(this).attr("data-state");
+    //creates a condition if the image state is still, and the image is clicked, to switch the state to data-animate
+    if (state === "still") {
+      $(this).attr("src", $(this).attr("data-animate"));
+      $(this).attr("data-state", "animate");
+    }
+    //creates a swtich condition that allows for the data-state to be set to still if the image is in any other state than still (defaultly animate)
+    else {
+      $(this).attr("src", $(this).attr("data-still"));
+      $(this).attr("data-state", "still");
+    }
+  });
 });
